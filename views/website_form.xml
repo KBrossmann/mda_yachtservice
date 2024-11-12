@@ -1,0 +1,235 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="menu_yachtservice_form" model="website.menu">
+            <field name="name">Request Repair</field>
+            <field name="url">/service_request</field>
+            <field name="parent_id" ref="website.main_menu"/>
+            <field name="sequence" type="int">22</field>
+        </record>
+
+        <template id="create_request" name="Create Service Request">
+            <t t-call="website.layout">
+                <head>
+                    <script src="https://www.google.com/recaptcha/api.js?render=6LeSlVApAAAAAHRiUiKWmdCc1duXGdOyH7ncSFIE"></script>
+                </head>
+                <div id="wrap">
+                    <div class="oe_structure">
+                        <div class="container">
+                            <form role="form" action="/submit" method="POST" enctype="multipart/form-data"
+                                  onsubmit="executeRecaptcha(event)">
+                                <br/>
+                                <h3 style="color: rgb(0, 49, 99);">Submit your Repair / Service / Maintenance request by
+                                    filling the form.
+                                </h3>
+                                <style>
+                                    .custom-date-input {
+                                    max-width: 16ch;
+                                    }
+
+                                    #arc_number_group {
+                                    visibility: hidden;
+                                    }
+                                </style>
+                                <br/>
+                                <br/>
+                                <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                                <div class="row">
+                                    <div class="col-lg-6 mt-4 mt-lg-0">
+                                        <div class="form-group">
+                                            <label for="name">Name:</label>
+                                            <input type="text"
+                                                   class="form-control"
+                                                   name="name"
+                                                   id="name"
+                                                   required="true"
+                                                   placeholder="e.g. John Doe"/>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="email">Email address:</label>
+                                            <input type="email"
+                                                   class="form-control"
+                                                   name="email"
+                                                   id="email"
+                                                   required="true"/>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="description">Problem Description:</label>
+                                            <textarea class="form-control"
+                                                      name="description"
+                                                      id="description"
+                                                      placeholder="Enter Problem Description Here"
+                                                      rows="5">
+                                            </textarea>
+                                        </div>
+                                        <div>
+                                            <div class="row">
+                                                <div class="col-lg-6">
+                                                    <div class="form-group">
+                                                        <label for="eta">Estimated Time of Arrival:</label>
+                                                        <input type="date"
+                                                               class="form-control custom-date-input"
+                                                               name="eta"
+                                                               id="eta"
+                                                               required="true"
+                                                               value="${new Date().toISOString().split('T')[0]}"/>
+                                                    </div>
+                                                </div>
+                                                <div class="col-lg-6">
+                                                    <div class="form-group">
+                                                        <label for="arc">I Participate in a Race/Regatta:</label>
+                                                        <div class="custom-control custom-switch">
+                                                            <input type="checkbox"
+                                                                   class="custom-control-input"
+                                                                   name="arc"
+                                                                   id="arc"/>
+                                                            <label class="custom-control-label" for="arc">
+                                                            </label>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-lg-6">
+                                                    <div class="form-group" id="arc_number_group">
+                                                        <label for="arc_number">Race Number:</label>
+                                                        <input type="text"
+                                                               class="form-control"
+                                                               name="arc_number"
+                                                               id="arc_number"
+                                                               placeholder="Please Provide Your Race number"
+                                                               pattern="\d{1,5}"
+                                                               title="Please enter your race number"/>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-6 mt-4 mt-lg-0">
+                                        <div class="form-group">
+                                            <label for="name">Phone:</label>
+                                            <input type="text" class="form-control" name="phone"
+                                                   id="phone" required="true"/>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="yacht_name">Boat Name:</label>
+                                            <input type="text" class="form-control" name="yacht_name"
+                                                   id="yacht_name" required="true"/>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label for="parts_requested">Parts Requested:</label>
+                                            <textarea class="form-control" name="parts_requested" id="parts_requested"
+                                                      placeholder="If parts are required, please enter here" rows="5">
+                                            </textarea>
+                                        </div>
+
+                                        <div class="form-group o_website_form_custom_attachments">
+                                            <label class="control-label" for="Attachments">Attach Files:</label>
+                                            <input type="file" class="form-control o_website_form_input"
+                                                   name="attachment"
+                                                   multiple='multiple'/>
+                                            <div>
+                                                <label style="color:grey; font-size:12px;">Multiple files can be
+                                                    attached
+                                                    <p>
+                                                    </p>
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <p>
+                                </p>
+                                <input type="hidden" id="g-recaptcha-response" name="g-recaptcha-response"/>
+                                <button type="submit" class="btn btn-primary pull-left">Request Service</button>
+                                <p>
+                                </p>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </t>
+            <script>
+                document.addEventListener('DOMContentLoaded', function () {
+                // Toggle functionality
+                const arcToggle = document.getElementById('arc');
+                const arcNumberInput = document.getElementById('arc_number');
+                arcToggle.addEventListener('change', function () {
+                if (arcToggle.checked) {
+                arcNumberInput.style.visibility = 'visible';
+                arcNumberInput.required = true;
+                } else {
+                arcNumberInput.style.visibility = 'hidden';
+                arcNumberInput.required = false;
+                }
+                });
+
+                // Set the ETA input to today's date
+                document.getElementById('eta').value = new Date().toISOString().split('T')[0];
+
+                // reCAPTCHA
+                grecaptcha.ready(function () {
+                window.executeRecaptcha = function(event) {
+                event.preventDefault();
+                grecaptcha.execute('6LeSlVApAAAAAHRiUiKWmdCc1duXGdOyH7ncSFIE', {action: 'submit'}).then(function(token)
+                {
+                document.getElementById('g-recaptcha-response').value = token;
+                document.querySelector('form').submit();
+                });
+                };
+                });
+                });
+            </script>
+        </template>
+
+        <template id="request_thanks" name="Repair Request Form Successfully Submitted">
+            <t t-call="website.layout">
+                <div id="wrap">
+                    <div class="container">
+                        <div class="row">
+                            <p>
+                                <h1>
+                                </h1>
+                            </p>
+                            <div class="col-lg-7 col-xl-6 mr-lg-auto oe_structure text-center">
+                                <div class="col-md-12">
+                                    <div class="alert alert-success">
+                                        <p>
+                                        </p>
+                                        <span class="fa fa-thumbs-up fa-2x">
+                                        </span>
+                                        <h5 class="text-center">
+                                            <span>We have received your repair/service request.</span>
+                                        </h5>
+                                        <p class="text-center">Your request number is
+                                            <h1>
+                                                <t t-esc="ref"/>
+                                            </h1>
+                                            Please note it for further communication.
+                                            You will receive an email from our repair team shortly.
+                                            Please remember to activate you request upon arrival.
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </t>
+        </template>
+
+        <template id="recaptcha_failure" name="reCAPTCHA Failure">
+            <t t-call="website.layout">
+                <div class="container mt16">
+                    <div class="alert alert-danger">
+                        <h4>reCAPTCHA Verification Failed</h4>
+                        <p>We were unable to verify the reCAPTCHA. Please try again or contact support if the problem
+                            persists.
+                        </p>
+                    </div>
+                </div>
+            </t>
+        </template>
+
+
+    </data>
+</odoo>

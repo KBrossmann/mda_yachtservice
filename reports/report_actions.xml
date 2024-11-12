@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+         <record id="print_support_request_yacht" model="ir.actions.report">
+            <field name="name">Print Yacht Repair Request</field>
+            <field name="model">yacht.service.client</field>
+            <field name="report_type">qweb-pdf</field>
+            <field name="report_name">mda_yachtservice.support_report_yacht</field>
+            <field name="report_file">mda_yachtservice.support_report_yacht</field>
+        </record>
+
+</odoo>

@@ -1,0 +1,216 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<odoo>
+    <record model="ir.actions.act_window" id="action_yachtservice_form">
+        <field name="name">Yachtservice</field>
+        <field name="res_model">yacht.service.client</field>
+        <field name="view_mode">tree,form,kanban</field>
+    </record>
+
+    <record model="ir.actions.act_window" id="action_product_template_kanban_view">
+        <field name="name">Products</field>
+        <field name="res_model">product.template</field>
+        <field name="view_mode">tree,form,kanban</field>
+        <field name="view_id" ref="product.product_template_kanban_view"/>
+    </record>
+
+    <record model="ir.actions.act_window" id="action_open_related_workorder">
+        <field name="name">Related Work Order</field>
+        <field name="res_model">sale.order</field>
+        <field name="view_mode">form,tree</field>
+        <field name="context">{'default_yacht_service_id': active_id}</field>
+        <field name="domain">[('yacht_service_id', '=', active_id)]</field>
+    </record>
+
+    <record model="ir.actions.act_window" id="action_yachtservice_invoice_list">
+        <field name="name">Invoice List</field>
+        <field name="res_model">account.move</field>
+        <field name="view_mode">tree,form,kanban</field>
+        <field name="view_id" ref="account.view_account_move_kanban"/>
+    </record>
+
+    <record model="ir.ui.view" id="view_yachtservice_form">
+        <field name="name">yachtservice.form</field>
+        <field name="model">yacht.service.client</field>
+        <field name="arch" type="xml">
+            <form attrs="{'readonly': [('has_related_sale_order', '=', True)]}">
+                <header>
+                    <p>
+                    </p>
+                    <field name="quotation_create" invisible="True" widget="button"/>
+                    <field name="work_order_create" invisible="True" widget="button"/>
+                    <field name="active" invisible="False"/>
+                    <field name="has_related_sale_order" invisible="True"/>
+                    <widget name="web_ribbon" title="Archived" bg_color="bg-info"
+                            attrs="{'invisible': [('active', '=', True)]}"/>
+                    <button string="Create Ticket" type="object"
+                            name="set_under_process"
+                            class="btn-secondary"
+                            attrs="{'invisible': [('under_process', '=', True)]}"/>
+                    <button string="Reprint Ticket" type="action" name="%(print_support_request_yacht)d"
+                            class="btn_success"
+                            attrs="{'invisible': [('under_process', '=', False)]}"/>
+                    <button string="Create Quotation" type="object" name="create_quotation" class="btn-secondary"
+                            attrs="{'invisible': ['|', ('quotation_create', '=', True), ('work_order_create', '=', True)]}"/>
+                    <button string="Finish Job" type="object" name="create_sale_order" class="btn-primary"
+                            attrs="{'invisible': [('work_order_create', '=', True)]}"/>
+                    <field name="under_process" widget="Toggle" invisible="False"/>
+                </header>
+                <sheet>
+                    <field name="related_payment_state" widget="ribbon" statusbar_visible="not_paid,in_payment,paid,partial"/>
+                    <div class="o-form-buttonbox oe_button_box position-relative text-end o_not_full">
+                        <button class="btn oe_stat_button btn-light flex-shrink-0 mb-0 py-0 border-0 border-start border-bottom rounded-0 text-start text-nowrap text-capitalize"
+                                name="action_open_related_sale_order"
+                                type="object"
+                                attrs="{'invisible': [('has_related_sale_order', '=', False)]}"
+                                data-tooltip-template="views.ViewButtonTooltip"
+                                data-tooltip-info="{&quot;debug&quot;:true,&quot;button&quot;:{&quot;modifiers&quot;:&quot;{\&quot;invisible\&quot;: [[\&quot;ref\&quot;, \&quot;=\&quot;, False]]}&quot;,&quot;type&quot;:&quot;object&quot;,&quot;name&quot;:&quot;action_open_related_sale_order&quot;},&quot;context&quot;:{&quot;search_default_my_quotation&quot;:1,&quot;lang&quot;:&quot;en_GB&quot;,&quot;tz&quot;:&quot;Atlantic/Cape_Verde&quot;,&quot;uid&quot;:2,&quot;allowed_company_ids&quot;:[1]},&quot;model&quot;:&quot;yacht.service.client&quot;}">
+                            <i class="fa fa-fw o_button_icon fa-wrench" title="Open Related Work Order"></i>
+                            <div class="o_field_widget o_readonly_modifier o_field_statinfo">
+                                <span class="o_stat_info o_stat_value">1</span>
+                                <span class="o_stat_text">Work Order</span>
+                            </div>
+                        </button>
+                    </div>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="ref" readonly="1"/>
+                        </h1>
+                        <field name="priority" widget="priority" modifiers="{'readonly':true}"/>
+                    </div>
+                    <group col="2">
+                        <group>
+                            <!-- Fields for the left column -->
+                            <field name="customer" help="Your name..."/>
+                            <field name="yacht_name" placeholder="Name of your boat..."/>
+                            <field name="create_date" widget="date" options='{"date_format": "MM/DD/YYYY"}'/>
+                            <field name="yacht_type"/>
+                            <!--                            <field name="invoice_paid"/>-->
+                            <field name="manager_id" required="True" widget="many2one_tags"/>
+                        </group>
+                        <group>
+                            <field name="arc_number"
+                                   attrs="{'required': [('arc', '=', True)], 'invisible': [('arc', '=', False)]}"/>
+                            <field name="arc"/>
+                            <field name="location" placeholder=""/>
+                            <field name="location_txt" string="Locality:"
+                                   attrs="{'invisible': [('location', '!=', '1')], 'required': [('location', '=', '1')]}"
+                                   placeholder="Enter Location"/>
+                            <field name="eta" attrs="{'readonly': [('location', '!=', '0')]}"
+                                   placeholder="Please add your Estimated Arrival Time..."/>
+                            <field name="type_txt" attrs="{'invisible': [('yacht_type', '!=', '0')]}"/>
+                            <field name="yacht_brand" placeholder="Oneoff, Beneteau, Bertram, or other makers..."/>
+                            <field name="mechanic_id" widget="many2many_tags"/>
+                        </group>
+                        <group>
+                            <field name="description" readonly="False"/>
+                            <field name="parts_requested" readonly="False"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Time Sheet">
+                            <field name="time_line_ids" attrs="{'readonly': [('has_related_sale_order', '=', True)]}">
+                                <tree editable="bottom">
+                                    <field name="product_id" create="False"/>
+                                    <field name="name" placeholder="Describe the job here..."/>
+                                    <field name="time" widget='float_time'/>
+                                    <field name="related_price_unit" invisible="1"/>
+                                    <field name="mechanic_id" required="1" domain="[('is_mechanic','=', True)]"/>
+                                </tree>
+                            </field>
+                        </page>
+                        <page string="Parts Used">
+                            <field name="order_line_ids" attrs="{'readonly': [('has_related_sale_order', '=', True)]}">
+                                <tree editable="bottom">
+                                    <field name="product_id"/>
+                                    <field name="quantity"/>
+                                    <field name="related_price_unit" invisible="1"/>
+                                </tree>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids"/>
+                    <field name="message_ids" options="{'post_refresh': 'recipients'}"/>
+                </div>
+            </form>
+        </field>
+    </record>
+
+    <record model="ir.ui.view" id="view_yachtservice_tree">
+        <field name="name">yachtservice.tree</field>
+        <field name="model">yacht.service.client</field>
+        <field name="arch" type="xml">
+            <tree default_order="priority desc, eta, create_date" decoration-success="under_process == True"
+                  decoration-danger="work_order_create == True">
+                <field name="ref" readonly="1"/>
+                <field name="yacht_name"/>
+                <field name="customer"/>
+                <field name="create_date"/>
+                <field name="eta"/>
+                <field name="location"/>
+                <field name="arc" widget="button"/>
+                <field name="under_process" invisible="True"/>
+                <field name="work_order_create" invisible="True"/>
+                <field name="manager_id"/>
+                <field name="priority" widget="priority" modifiers="{'readonly':true}"/>
+                <!--                <field name="is_bot"/>-->
+            </tree>
+        </field>
+    </record>
+
+    <record model="ir.ui.view" id="view_yachtservice_kanban">
+        <field name="name">yachtservice.kanban</field>
+        <field name="model">yacht.service.client</field>
+        <field name="arch" type="xml">
+            <kanban>
+                <field name="yacht_name"/>
+                <field name="customer"/>
+                <field name="create_date" invisible="True"/>
+                <field name="location"/>
+                <field name="arc" widget="button"/>
+                <field name="under_process" invisible="True"/>
+                <field name="manager_id"/>
+                <field name="priority" widget="priority" modifiers="{'readonly':true}"/>
+                <templates>
+                    <t t-name="kanban-box">
+                        <div class="oe_kanban_content">
+                            <div class="oe_kanban_card">
+                                <div class="oe_kanban_card_header">
+                                    <div class="oe_kanban_card_title">
+                                        <strong>
+                                            <field name="yacht_name"/>
+                                        </strong>
+                                    </div>
+                                    <div class="oe_kanban_card_subtitle">
+                                        <field name="customer"/>
+                                    </div>
+                                </div>
+                                <div class="oe_kanban_card_content">
+                                    <!--                                    <div class="oe_kanban_card_field">-->
+                                    <!--                                        <field name="create_date"/>-->
+                                    <!--                                    </div>-->
+                                    <div class="oe_kanban_card_field">
+                                        <field name="location"/>
+                                    </div>
+                                    <div class="oe_kanban_card_field">
+                                        <field name="arc" widget="button"/>
+                                    </div>
+                                    <div class="oe_kanban_card_field">
+                                        <field name="manager_id"/>
+                                    </div>
+                                    <div class="oe_kanban_card_field">
+                                        <field name="priority" widget="priority" modifiers="{'readonly':true}"/>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
+
+</odoo>

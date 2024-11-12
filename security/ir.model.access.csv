@@ -1,0 +1,5 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+mda_yachtservice.access_yacht_service_client,access_yacht_service_client,mda_yachtservice.model_yacht_service_client,base.group_user,1,1,1,1
+mda_yachtservice.access_part_order_line,access_part_order_line,mda_yachtservice.model_part_order_line,base.group_user,1,1,1,1
+mda_yachtservice.access_time_sheet_line,access_time_sheet_line,mda_yachtservice.model_time_sheet_line,base.group_user,1,1,1,1
+

@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <menuitem id="yachtservice_root"
+              name="Yachtservice"
+              action="action_yachtservice_form"
+              sequence="10"
+              web_icon="mda_yachtservice,static/description/icon.png"/>
+
+    <menuitem id="yachtservice_technician"
+              name="Technician"
+              parent="yachtservice_root"
+              sequence="10"/>
+
+    <menuitem id="yachtservice_product_template"
+              name="Product Lookup"
+              parent="yachtservice_root"
+              action="action_product_template_kanban_view"
+              sequence="20"/>
+
+
+    <menuitem id="yachtservice_invoice_list_custom"
+              name="Invoices"
+              parent="yachtservice_root"
+              action="account.action_move_out_invoice_type"
+              sequence="30"/>
+
+        <menuitem id="yachtservice_sale_order_list_custom"
+              name="Workorders"
+              parent="yachtservice_root"
+              action="account.action_move_out_invoice_type"
+              sequence="30"/>
+
+
+
+</odoo>

@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <template id="support_report_yacht">
+            <t t-foreach="docs" t-as="doc">
+                <t t-call="web.html_container">
+                    <t t-call="web.external_layout">
+                        <div class="page">
+                            <h2>
+                                <t t-esc="doc.ref"/>
+                            </h2>
+                            <table class="table table-striped">
+                                <thead>
+                                    <tr class="success">
+                                        <th colspan="3">Job Ticket/Job Information Sheet</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td t-if="doc.yacht_name">
+                                            <p>Boat Name :
+                                                <t t-esc="doc.yacht_name"/>
+                                            </p>
+                                        </td>
+                                        <td t-if="doc.customer.name">
+                                            <p>Client Name :
+                                                <t t-esc="doc.customer.name"/>
+                                            </p>
+                                        </td>
+                                        <td t-if="doc.manager_id">
+                                            <p>Job Supervisor :
+                                                <span t-field="doc.manager_id"/>
+                                            </p>
+                                        </td>
+                                        <td t-if="not doc.manager_id">
+                                            <p>Job Supervisor : No Data</p>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td t-if="doc.create_date">
+                                            <p>Created :
+                                                <t t-esc="doc.create_date" t-options="{'widget': 'date'}"/>
+                                            </p>
+                                        </td>
+                                        <td t-if="doc.create_uid">
+                                            <p>Created By :
+                                                <span t-field="doc.create_uid"/>
+                                            </p>
+                                        </td>
+                                        <td t-if="doc.location">
+                                            <p>Location :
+                                                <t t-esc="dict(doc.fields_get(allfields=['location'])['location']['selection'])[doc.location]"/>
+                                            </p>
+                                        </td>
+                                    </tr>
+                                    <tr>
+<!--                                        <td t-if="doc.customer.phone">-->
+<!--                                            <p>Phone :-->
+<!--                                                <t t-esc="doc.customer.phone"/>-->
+<!--                                            </p>-->
+<!--                                        </td>-->
+<!--                                        <td t-if="doc.customer.email">-->
+<!--                                            <p>Email :-->
+<!--                                                <t t-esc="doc.customer.email"/>-->
+<!--                                            </p>-->
+<!--                                        </td>-->
+                                        <td t-if="doc.arc">
+                                            <p>Race Number :
+                                                <t t-esc="doc.arc_number"/>
+                                            </p>
+                                        </td>
+                                        <td t-if="not doc.arc_number">
+                                            <p>Race Participant : No</p>
+                                        </td>
+                                    </tr>
+                                    <t t-if="doc.description">
+                                        <table class="table table-striped">
+                                            <thead>
+                                                <tr class="success">
+                                                    <th colspan="3">Issue Description</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr>
+                                                    <td>
+                                                        <t t-esc="doc.description"/>
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </t>
+
+                                    <t t-if="doc.parts_requested">
+                                        <table class="table table-striped">
+                                            <thead>
+                                                <tr class="success">
+                                                    <th colspan="3">Parts Requested</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr>
+                                                    <td>
+                                                        <t t-esc="doc.parts_requested"/>
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </t>
+                                </tbody>
+                            </table>
+                            <style>
+                                /* Style for the handwritten notes section */
+                                .handwritten-notes {
+                                list-style-type: none;
+                                padding: 0;
+                                }
+
+                                /* Style for each line in the handwritten notes */
+                                .handwritten-notes li {
+                                border-bottom: 1px solid #A9A9A9; /* Grey border to create lines */
+                                margin-bottom: 5px; /* Adjust margin as needed to separate lines */
+                                height: 18px; /* Adjust the height of each line */
+                                }
+                            </style>
+
+                            <!-- Lines for handwritten notes -->
+                            <div class="notes-section">
+                                <h4 style="text-align: center; font-size: 18px; margin-top: 10px;">Observations</h4>
+                                <ul class="handwritten-notes">
+                                    <li t-foreach="range(10)" t-as="i"></li>
+                                </ul>
+                            </div>
+                            <div class="col">
+                                <span style="font-size: 12px;">Com esta ordem/ficha de trabalho autorizo expressamente
+                                    os funcionários da
+                                    boatCV, meio-do-atlantico, Lda. a visitar e entrar no meu iate para efetuar os
+                                    trabalhos indicados.
+                                    Esta ordem de serviço foi criada por uma máquina e é válida sem assinatura.
+                                </span>
+                            </div>
+                        </div>
+                    </t>
+                </t>
+            </t>
+        </template>
+    </data>
+</odoo>

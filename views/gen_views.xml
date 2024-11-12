@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <!-- adds an "Is Supervisor" field to the employee form view -->
+        <record id="is_supervisor_form" model="ir.ui.view">
+            <field name="name">hr.employee.form</field>
+            <field name="model">hr.employee</field>
+            <field name="inherit_id" ref="hr.view_employee_form"/>
+            <field name="arch" type="xml">
+                <field name="work_email" position="after">
+                    <field name='is_supervisor'/>
+                </field>
+            </field>
+        </record>
+
+        <!-- adds an "Is Technician" field to the employee form view -->
+        <record id="is_mechanic_form" model="ir.ui.view">
+            <field name="name">hr.employee.form</field>
+            <field name="model">hr.employee</field>
+            <field name="inherit_id" ref="hr.view_employee_form"/>
+            <field name="arch" type="xml">
+                <field name="coach_id" position="after">
+                    <field name='is_mechanic'/>
+                </field>
+            </field>
+        </record>
+
+
+        <!--Adds boat name to the sale order form view -->
+        <record id="view_order_form_inherit_yacht_name" model="ir.ui.view">
+            <field name="name">sale.order.form.yacht.name</field>
+            <field name="model">sale.order</field>
+            <field name="inherit_id" ref="sale.view_order_form"/>
+            <field name="arch" type="xml">
+                <field name="partner_id" position="before">
+                    <field name="yacht_name"/>
+                </field>
+            </field>
+        </record>
+
+        <!--Adds boat Name to the sale order tree view -->
+        <record id="view_order_tree_inherit_yacht_name" model="ir.ui.view">
+            <field name="name">sale.order.tree.yacht.name</field>
+            <field name="model">sale.order</field>
+            <field name="inherit_id" ref="sale.view_order_tree"/>
+            <field name="arch" type="xml">
+                <field name="date_order" position="after">
+                    <field name="yacht_name" search="True"/>
+                </field>
+            </field>
+        </record>
+
+        <!--Adds boat Name to the Invoice tree view -->
+        <record id="view_invoice_tree_inherit_yacht_name" model="ir.ui.view">
+            <field name="name">invoice.tree.yacht.name</field>
+            <field name="model">account.move</field>
+            <field name="inherit_id" ref="account.view_out_invoice_tree"/>
+            <field name="arch" type="xml">
+                <field name="invoice_partner_display_name" position="before">
+                    <field name="yacht_name" search="True"/>
+                </field>
+            </field>
+        </record>
+
+
+        <!--Adds boat Name to the quotation tree view -->
+        <record id="view_quotation_tree_inherit_yacht_name" model="ir.ui.view">
+            <field name="name">quotation.tree.yacht.name</field>
+            <field name="model">sale.order</field>
+            <field name="inherit_id" ref="sale.view_quotation_tree_with_onboarding"/>
+            <field name="arch" type="xml">
+                <field name="create_date" position="after">
+                    <field name="yacht_name" search="True"/>
+                </field>
+            </field>
+        </record>
+
+
+        <record id="yacht_service_view_search" model="ir.ui.view">
+            <field name="name">yacht.service.view.search</field>
+            <field name="model">yacht.service.client</field>
+            <field name="arch" type="xml">
+                <search string="Plan">
+                    <field name="customer"/>
+                    <field name="yacht_name"/>
+                    <separator/>
+                    <filter string="Archived" name="inactive" domain="[('active', '=', False)]"/>
+                </search>
+            </field>
+        </record>
+    </data>
+</odoo>
