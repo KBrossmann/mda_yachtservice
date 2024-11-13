@@ -11,6 +11,8 @@ class ServiceRequest(http.Controller):
     def service_request(self, **post):
         return request.render("mda_yachtservice.create_request", {})
 
+
+    # TODO: program recaptch so it can be configured from settings UI
     # controller to post the data into the model yacht_repair and call the thank_you page
     @http.route("/submit", type="http", auth="public", website=True)
     def create_yacht_job(self, **post):
